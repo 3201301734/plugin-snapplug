@@ -42,13 +42,10 @@ func (p *SnapplugConfig) OnEvent(event any) {
 	}
 }
 
-// var plugin = InstallPlugin(new(SnapplugConfig))
 var _ = InstallPlugin(conf)
 
 func (p *SnapplugConfig) API_video_cover(w http.ResponseWriter, r *http.Request) {
 	query := r.URL.Query()
-	// videoType := query.Get("type")
-	// videoPath := query.Get("videoPath")
 	var err error
 	var imageFile *os.File
 	var fi fs.FileInfo
