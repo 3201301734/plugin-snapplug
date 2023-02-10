@@ -50,17 +50,26 @@ func (p *SnapplugConfig) API_video_cover(w http.ResponseWriter, r *http.Request)
 	var imageFile *os.File
 	var fi fs.FileInfo
 
+	var contentType = "image/jpeg"
+
 	wd, _ := os.Getwd()
-	// fmt.Println("工作目录: " + wd)
-	// videoPath := wd + "/record/flv/test/video/1675220979.flv"
 	videoPath := fmt.Sprintf("%s/record/%s/%s", wd, query.Get("type"), query.Get("videoPath"))
-	imagePath := videoPath[:strings.Index(videoPath, ".")] + ".jpg"
+	format := query.Get("format")
+	switch format {
+	case "png":
+		format = "png"
+		contentType = "image/png"
+	default:
+		format = "jpg"
+		contentType = "image/jpeg"
+	}
+	imagePath := videoPath[:strings.Index(videoPath, ".")] + "." + format
 
 	if fi, err = getVideoCover(videoPath, imagePath); err == nil && fi != nil {
 		buff := make([]byte, fi.Size())
 		if imageFile, err = os.Open(imagePath); err == nil {
 			if _, err = imageFile.Read(buff); err == nil {
-				w.Header().Set("Content-Type", "image/jpeg")
+				w.Header().Set("Content-Type", contentType)
 				_, err = w.Write(buff)
 			}
 		}
